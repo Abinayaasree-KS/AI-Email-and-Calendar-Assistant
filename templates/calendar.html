@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Management - AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-connected {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+        }
+
+        .status-disconnected {
+            background: rgba(244, 67, 54, 0.8);
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chat-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            position: relative;
+        }
+
+        .user-message {
+            background: #e3f2fd;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .bot-message {
+            background: #f1f8e9;
+            margin-right: auto;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .error-message {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .warning-message {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: #666;
+        }
+
+        .loading-indicator.show {
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .chat-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .send-btn {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #5a67d8;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .action-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .action-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .examples {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .examples h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .examples ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .examples li {
+            background: white;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .examples li:hover {
+            background: #e3f2fd;
+        }
+
+        .meeting-summary {
+            background: #e8f4f8;
+            border: 1px solid #b3d9e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .meeting-summary h5 {
+            color: #2c5e7a;
+            margin-bottom: 10px;
+        }
+
+        .meeting-summary .detail {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .meeting-summary .detail strong {
+            color: #2c5e7a;
+        }
+
+        .notification-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification-banner.show {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            background: #4caf50;
+        }
+
+        .notification-error {
+            background: #f44336;
+        }
+
+        .notification-warning {
+            background: #ff9800;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .notification-banner {
+                position: fixed;
+                top: auto;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                transform: translateY(100px);
+            }
+
+            .notification-banner.show {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗓️ Calendar Management</h1>
+        </div>
+
+        <div class="nav-bar">
+            <a href="/" class="btn">← Back to Dashboard</a>
+            <div>
+                <span id="connectionStatus" class="status-indicator status-disconnected">🔴 Checking...</span>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="insertExample('schedule a meeting with john@example.com tomorrow at 2pm titled Project Discussion')">
+                <div class="action-icon">📅</div>
+                <div class="action-title">Schedule Meeting</div>
+                <div class="action-desc">Create new calendar events with invitations</div>
+            </div>
+            <div class="action-card" onclick="insertExample('update my Project Discussion meeting to 3pm')">
+                <div class="action-icon">✏️</div>
+                <div class="action-title">Update Event</div>
+                <div class="action-desc">Modify existing events</div>
+            </div>
+            <div class="action-card" onclick="insertExample('delete my Project Discussion meeting')">
+                <div class="action-icon">🗑️</div>
+                <div class="action-title">Delete Event</div>
+                <div class="action-desc">Delete calendar events</div>
+            </div>
+            <div class="action-card" onclick="insertExample('check my emails for meeting requests')">
+                <div class="action-icon">📧</div>
+                <div class="action-title">Email Integration</div>
+                <div class="action-desc">Process email requests</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h3>💬 Calendar Assistant</h3>
+                
+                <div id="chatContainer" class="chat-container">
+                    <div class="message bot-message">
+                        🗓️ Welcome to Enhanced Calendar Management!<br><br>
+                        I can help you with:
+                        <br>• Schedule meetings with automatic email invitations
+                        <br>• Send calendar invites to participants
+                        <br>• Check for scheduling conflicts
+                        <br>• Update existing calendar events
+                        <br>• Delete events with notifications
+                        <br>• Process meeting requests from emails
+                        <br>• View your upcoming schedule
+                        <br><br>
+                        ✨ <strong>New Features:</strong>
+                        <br>• Enhanced email invitations with HTML formatting
+                        <br>• Automatic conflict detection
+                        <br>• Timezone-aware scheduling
+                        <br>• Meeting reminders
+                        <br><br>
+                        Try the examples below or type your own request!
+                    </div>
+                </div>
+
+                <div class="loading-indicator" id="loadingIndicator">
+                    🔄 Processing your request...
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="chatInput" class="chat-input" 
+                           placeholder="Type your calendar request (e.g., 'schedule meeting with john@company.com tomorrow 2pm')" 
+                           onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()" class="send-btn" id="sendBtn">Send</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💡 Enhanced Example Commands</h3>
+                
+                <div class="examples">
+                    <h4>📅 Scheduling with Email Invites</h4>
+                    <ul>
+                        <li onclick="insertExample('schedule a meeting with alice@company.com tomorrow at 10am to 11am titled Weekly Sync')">
+                            Schedule a meeting with alice@company.com tomorrow at 10am to 11am titled "Weekly Sync"
+                        </li>
+                        <li onclick="insertExample('book a call with bob@startup.io on Friday 2pm titled Project Review')">
+                            Book a call with bob@startup.io on Friday 2pm titled "Project Review"
+                        </li>
+                        <li onclick="insertExample('set up a team meeting next Monday 3pm to 4pm with team@company.com')">
+                            Set up a team meeting next Monday 3pm to 4pm with team@company.com
+                        </li>
+                        <li onclick="insertExample('schedule a 30-minute standup with dev-team@company.com every Monday at 9am')">
+                            Schedule a 30-minute standup with dev-team@company.com every Monday at 9am
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="examples">
+                    <h4>✏️ Updating Events</h4>
+                    <ul>
+                        <li onclick="insertExample('reschedule my Weekly Sync meeting to Wednesday 2pm')">
+                            Reschedule my Weekly Sync meeting to Wednesday 2pm
+                        </li>
+                        <li onclick="insertExample('change the Project Review meeting time to 4pm')">
+                            Change the Project Review meeting time to 4pm
+                        </li>
+                        <li onclick="insertExample('move my standup meeting to Tuesday')">
+                            Move my standup meeting to Tuesday
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="examples">
+                    <h4>🗑️ Deleting with Notifications</h4>
+                    <ul>
+                        <li onclick="insertExample('Delete my Weekly Sync meeting and notify participants')">
+                            Delete my Weekly Sync meeting and notify participants
+                        </li>
+                        <li onclick="insertExample('delete the Project Review meeting')">
+                            Delete the Project Review meeting
+                        </li>
+                        <li onclick="insertExample('remove my standup from calendar')">
+                            Remove my standup from calendar
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="examples">
+                    <h4>📧 Enhanced Email Integration</h4>
+                    <ul>
+                        <li onclick="insertExample('check my emails for meeting requests and auto-schedule them')">
+                            Check my emails for meeting requests and auto-schedule them
+                        </li>
+                        <li onclick="insertExample('send meeting summary to participants of Project Review')">
+                            Send meeting summary to participants of Project Review
+                        </li>
+                        <li onclick="insertExample('process high priority emails with meeting requests')">
+                            Process high priority emails with meeting requests
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notificationBanner" class="notification-banner"></div>
+
+    <script>
+        let isProcessing = false;
+
+        // Check connection status
+        function checkConnectionStatus() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    const statusElement = document.getElementById('connectionStatus');
+                    if (data.gmail_connected && data.calendar_connected) {
+                        statusElement.className = 'status-indicator status-connected';
+                        statusElement.textContent = '🟢 Connected';
+                    } else {
+                        statusElement.className = 'status-indicator status-disconnected';
+                        statusElement.textContent = '🔴 Not Connected';
+                    }
+                })
+                .catch(error => {
+                    const statusElement = document.getElementById('connectionStatus');
+                    statusElement.className = 'status-indicator status-disconnected';
+                    statusElement.textContent = '🔴 Error';
+                });
+        }
+
+        function showNotification(message, type = 'success') {
+            const banner = document.getElementById('notificationBanner');
+            banner.textContent = message;
+            banner.className = `notification-banner notification-${type}`;
+            banner.classList.add('show');
+            
+            setTimeout(() => {
+                banner.classList.remove('show');
+            }, 5000);
+        }
+
+        function toggleLoading(show) {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const sendBtn = document.getElementById('sendBtn');
+            const chatInput = document.getElementById('chatInput');
+            
+            if (show) {
+                loadingIndicator.classList.add('show');
+                sendBtn.disabled = true;
+                chatInput.disabled = true;
+                isProcessing = true;
+            } else {
+                loadingIndicator.classList.remove('show');
+                sendBtn.disabled = false;
+                chatInput.disabled = false;
+                isProcessing = false;
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !isProcessing) {
+                sendMessage();
+            }
+        }
+
+        function insertExample(text) {
+            if (!isProcessing) {
+                document.getElementById('chatInput').value = text;
+            }
+        }
+
+        function sendMessage() {
+            if (isProcessing) return;
+            
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show loading
+            toggleLoading(true);
+
+            // Send to backend
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading
+                toggleLoading(false);
+                
+                // Add bot response to chat with appropriate styling
+                const messageType = data.success ? 'success' : (data.error ? 'error' : 'bot');
+                addMessage(data.reply, messageType);
+                
+                // Show notification
+                if (data.success) {
+                    showNotification(data.notification || 'Operation completed successfully!', 'success');
+                } else if (data.error) {
+                    showNotification(data.error, 'error');
+                } else if (data.warning) {
+                    showNotification(data.warning, 'warning');
+                }
+                
+                // Handle special actions
+                if (data.action === 'show_emails') {
+                    setTimeout(() => {
+                        window.open('/emails', '_blank');
+                    }, 1000);
+                } else if (data.action === 'clear_session') {
+                    fetch('/api/clear_session', { method: 'POST' });
+                } else if (data.action === 'refresh_calendar') {
+                    // Refresh calendar view if needed
+                    checkConnectionStatus();
+                }
+                
+                // Show meeting summary if provided
+                if (data.meeting_summary) {
+                    addMeetingSummary(data.meeting_summary);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toggleLoading(false);
+                addMessage('Sorry, there was an error processing your request. Please check your connection and try again.', 'error');
+                showNotification('Connection error. Please try again.', 'error');
+            });
+        }
+
+        function addMessage(text, type = 'bot') {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            
+            let className = 'message ';
+            if (type === 'user') {
+                className += 'user-message';
+            } else if (type === 'success') {
+                className += 'bot-message success-message';
+            } else if (type === 'error') {
+                className += 'bot-message error-message';
+            } else if (type === 'warning') {
+                className += 'bot-message warning-message';
+            } else {
+                className += 'bot-message';
+            }
+            
+            messageDiv.className = className;
+            messageDiv.innerHTML = text.replace(/\n/g, '<br>');
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addMeetingSummary(summary) {
+            const chatContainer = document.getElementById('chatContainer');
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'message bot-message';
+            
+            const summaryContent = `
+                <div class="meeting-summary">
+                    <h5>📅 Meeting Summary</h5>
+                    <div class="detail"><strong>Event:</strong> ${summary.event_name || 'N/A'}</div>
+                    <div class="detail"><strong>Participant:</strong> ${summary.participant_email || 'N/A'}</div>
+                    <div class="detail"><strong>Date:</strong> ${summary.date || 'N/A'}</div>
+                    <div class="detail"><strong>Time:</strong> ${summary.time || 'N/A'}</div>
+                    <div class="detail"><strong>Status:</strong> ${summary.status || 'N/A'}</div>
+                </div>
+            `;
+            
+            summaryDiv.innerHTML = summaryContent;
+            chatContainer.appendChild(summaryDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkConnectionStatus();
+            // Check status every 30 seconds
+            setInterval(checkConnectionStatus, 30000);
+        });
+    </script>
+</body>
+</html>
