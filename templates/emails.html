@@ -251,14 +251,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📧 Email Dashboard</h1>
+            <h1>Email Dashboard</h1>
         </div>
 
         <div class="nav-bar">
             <a href="/" class="btn">← Back to Dashboard</a>
             <div>
-                <button onclick="loadEmails()" class="btn btn-primary">🔄 Refresh Emails</button>
-                <button onclick="processMeetings()" class="btn btn-primary">⚡ Process Meetings</button>
+                <button onclick="loadEmails()" class="btn btn-primary">Refresh Emails</button>
+                <button onclick="processMeetings()" class="btn btn-primary">Process Meetings</button>
             </div>
         </div>
 
@@ -297,7 +297,7 @@
 
             <div id="emailsList">
                 <div class="loading">
-                    📧 Loading emails... Click "Refresh Emails" to load your latest emails.
+                    Loading emails... Click "Refresh Emails" to load your latest emails.
                 </div>
             </div>
         </div>
@@ -308,7 +308,7 @@
         let currentFilter = 'all';
 
         function loadEmails() {
-            document.getElementById('emailsList').innerHTML = '<div class="loading">🔄 Loading emails...</div>';
+            document.getElementById('emailsList').innerHTML = '<div class="loading">Loading emails...</div>';
             
             fetch('/api/emails')
                 .then(response => response.json())
@@ -346,7 +346,7 @@
             const emailsList = document.getElementById('emailsList');
             
             if (emails.length === 0) {
-                emailsList.innerHTML = '<div class="loading">📪 No emails found for this filter</div>';
+                emailsList.innerHTML = '<div class="loading">No emails found for this filter</div>';
                 return;
             }
 
@@ -356,8 +356,8 @@
                         <div class="email-subject">${escapeHtml(email.subject)}</div>
                         <div>
                             <span class="urgency-badge ${email.ai_urgency}">${email.ai_urgency}</span>
-                            ${email.is_meeting_request ? '<span class="meeting-indicator">📅 Meeting</span>' : ''}
-                            ${email.action_required ? '<span class="meeting-indicator">⚡ Action</span>' : ''}
+                            ${email.is_meeting_request ? '<span class="meeting-indicator">Meeting</span>' : ''}
+                            ${email.action_required ? '<span class="meeting-indicator">Action</span>' : ''}
                         </div>
                     </div>
                     <div class="email-sender">From: ${escapeHtml(email.sender)}</div>
@@ -489,7 +489,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(`✅ Processed ${data.processed_meetings.length} meeting requests!`);
+                        alert(`Processed ${data.processed_meetings.length} meeting requests!`);
                         loadEmails(); // Refresh the list
                     } else {
                         alert(`❌ Error: ${data.message || data.error}`);

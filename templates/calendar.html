@@ -337,7 +337,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🗓️ Calendar Management</h1>
+            <h1>Calendar Management</h1>
         </div>
 
         <div class="nav-bar">
@@ -349,22 +349,22 @@
 
         <div class="quick-actions">
             <div class="action-card" onclick="insertExample('schedule a meeting with john@example.com tomorrow at 2pm titled Project Discussion')">
-                <div class="action-icon">📅</div>
+                <!-- <div class="action-icon">📅</div> -->
                 <div class="action-title">Schedule Meeting</div>
                 <div class="action-desc">Create new calendar events with invitations</div>
             </div>
             <div class="action-card" onclick="insertExample('update my Project Discussion meeting to 3pm')">
-                <div class="action-icon">✏️</div>
+                <!-- <div class="action-icon">✏️</div> -->
                 <div class="action-title">Update Event</div>
                 <div class="action-desc">Modify existing events</div>
             </div>
             <div class="action-card" onclick="insertExample('delete my Project Discussion meeting')">
-                <div class="action-icon">🗑️</div>
+                <!-- <div class="action-icon">🗑️</div> -->
                 <div class="action-title">Delete Event</div>
                 <div class="action-desc">Delete calendar events</div>
             </div>
             <div class="action-card" onclick="insertExample('check my emails for meeting requests')">
-                <div class="action-icon">📧</div>
+                <!-- <div class="action-icon">📧</div> -->
                 <div class="action-title">Email Integration</div>
                 <div class="action-desc">Process email requests</div>
             </div>
@@ -372,11 +372,11 @@
 
         <div class="main-content">
             <div class="card">
-                <h3>💬 Calendar Assistant</h3>
+                <h3>Calendar Assistant</h3>
                 
                 <div id="chatContainer" class="chat-container">
                     <div class="message bot-message">
-                        🗓️ Welcome to Enhanced Calendar Management!<br><br>
+                        Welcome to Enhanced Calendar Management!<br><br>
                         I can help you with:
                         <br>• Schedule meetings with automatic email invitations
                         <br>• Send calendar invites to participants
@@ -386,7 +386,7 @@
                         <br>• Process meeting requests from emails
                         <br>• View your upcoming schedule
                         <br><br>
-                        ✨ <strong>New Features:</strong>
+                        <strong>New Features:</strong>
                         <br>• Enhanced email invitations with HTML formatting
                         <br>• Automatic conflict detection
                         <br>• Timezone-aware scheduling
@@ -397,7 +397,7 @@
                 </div>
 
                 <div class="loading-indicator" id="loadingIndicator">
-                    🔄 Processing your request...
+                    Processing your request...
                 </div>
 
                 <div class="input-group">
@@ -409,10 +409,10 @@
             </div>
 
             <div class="card">
-                <h3>💡 Enhanced Example Commands</h3>
+                <h3>Enhanced Example Commands</h3>
                 
                 <div class="examples">
-                    <h4>📅 Scheduling with Email Invites</h4>
+                    <h4>Scheduling with Email Invites</h4>
                     <ul>
                         <li onclick="insertExample('schedule a meeting with alice@company.com tomorrow at 10am to 11am titled Weekly Sync')">
                             Schedule a meeting with alice@company.com tomorrow at 10am to 11am titled "Weekly Sync"
@@ -430,7 +430,7 @@
                 </div>
 
                 <div class="examples">
-                    <h4>✏️ Updating Events</h4>
+                    <h4>Updating Events</h4>
                     <ul>
                         <li onclick="insertExample('reschedule my Weekly Sync meeting to Wednesday 2pm')">
                             Reschedule my Weekly Sync meeting to Wednesday 2pm
@@ -445,7 +445,7 @@
                 </div>
 
                 <div class="examples">
-                    <h4>🗑️ Deleting with Notifications</h4>
+                    <h4>Deleting with Notifications</h4>
                     <ul>
                         <li onclick="insertExample('Delete my Weekly Sync meeting and notify participants')">
                             Delete my Weekly Sync meeting and notify participants
@@ -460,7 +460,7 @@
                 </div>
 
                 <div class="examples">
-                    <h4>📧 Enhanced Email Integration</h4>
+                    <h4>Enhanced Email Integration</h4>
                     <ul>
                         <li onclick="insertExample('check my emails for meeting requests and auto-schedule them')">
                             Check my emails for meeting requests and auto-schedule them
@@ -641,7 +641,7 @@
             
             const summaryContent = `
                 <div class="meeting-summary">
-                    <h5>📅 Meeting Summary</h5>
+                    <h5>Meeting Summary</h5>
                     <div class="detail"><strong>Event:</strong> ${summary.event_name || 'N/A'}</div>
                     <div class="detail"><strong>Participant:</strong> ${summary.participant_email || 'N/A'}</div>
                     <div class="detail"><strong>Date:</strong> ${summary.date || 'N/A'}</div>
